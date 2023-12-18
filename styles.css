@@ -1,0 +1,21 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 98vh;
+    background-color: blueviolet;
+}
+
+#calculator {
+    height: 60vh;
+    width: 40vh;
+    background-color: yellow;
+}
+
+#display {
+    padding: 0;
+    height: 100px;
+    text-align: right;
+    background-color: lightgray;
+    font-size: 100px;
+}
