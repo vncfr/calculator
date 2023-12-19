@@ -16,8 +16,11 @@ let operator = null;
 let displayValue = 0;
 
 clearBtn.addEventListener('click', () => {
+    firstNumber = 0;
+    secondNumber = 0;
     display.textContent = "0";
     displayValue = 0;
+    unselectButton();
     operator = null;
 });
 
@@ -40,12 +43,12 @@ divideBtn.addEventListener('click', () => {
     operator = "divide";
     selectButton(divideBtn);
     if (firstNumber) {
-        displayValue = 0;
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, "divide");
         display.textContent = displayValue;
     } else {
         firstNumber = displayValue;
+        displayValue = 0;
     }
 });
 
@@ -54,7 +57,7 @@ numberBtn.forEach((button) => {
         if (display.textContent == "0.") {
             displayValue = Number(display.textContent);
         }
-        if (display.textContent == "0") {
+        if (displayValue == "0") {
             display.textContent = "";
         }
         if (display.textContent.length == 9) {
@@ -88,7 +91,7 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-    return a / b;
+    return Math.round(a / b * 10000000) / 10000000;
 }
 
 function percentage(num) {
@@ -101,10 +104,23 @@ function selectButton(button) {
     button.setAttribute("selected", true);
 }
 
-function unselectButton(button) {
+function unselectButton() {
+    switch (operator) {
+        case "add":
+            button = addBtn;
+            break;
+        case "subtract":
+            button = subtractBtn;
+            break;
+        case "multiply":
+            button = multiplyBtn;
+            break;
+        case "divide":
+            button = divideBtn;
+            break;
+    }
     button.style.backgroundColor = "orange";
-    button.style.color = "white";
-    button.setAttribute("selected", false);
+    button.style.color = "black";
 }
 
 function operate(a, b, operator) {
