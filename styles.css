@@ -11,7 +11,8 @@ body {
 #calculator {
     box-sizing: border-box;
     height: 650px;
-    width: 450px;
+    min-width: 450px;
+    max-width: 450px;
     border: 10px solid gray;
     background-color: black;
     padding: 2px;
@@ -27,7 +28,8 @@ body {
     height: 100px;
     border: 2px solid black;
     border-radius: 5px;
-    background-color: lightgray;
+    background-color: black;
+    color: white;
     font-size: 78px;
     width: 100%;
 }
@@ -37,30 +39,29 @@ body {
     flex-wrap: wrap;
 }
 
-.operation-button,
-.number-button,
-#clear-button,
-.function-button {
-    border: 1px solid black;
+button {
+    font-size: 35px;
+    border-radius: 10px;
+    border: 3px solid black;
     width: 106.25px;
     height: 105.2px;
     box-sizing: border-box;
-}
-
-button {
-    font-size: 30px;
-    border-radius: 4px;
 }
 
 .wide {
     width: 212.5px;
 }
 
+.number-button,
+.floating-button {
+    background-color: darkgray;
+}
+
 .operation-button {
-    background-color: greenyellow;
+    background-color: orange;
 }
 
 .function-button,
 #clear-button {
-    background-color: lightseagreen;
+    background-color: lightgray;
 }
