@@ -1,21 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@600&display=swap');
+
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 98vh;
-    background-color: blueviolet;
+    background-color: lightgray;
 }
 
 #calculator {
-    height: 60vh;
-    width: 40vh;
-    background-color: yellow;
+    box-sizing: border-box;
+    height: 650px;
+    width: 450px;
+    border: 10px solid gray;
+    background-color: black;
+    padding: 2px;
 }
 
 #display {
-    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-family: 'Source Code Pro', monospace;
     height: 100px;
-    text-align: right;
+    border: 2px solid black;
+    border-radius: 5px;
     background-color: lightgray;
-    font-size: 100px;
+    font-size: 78px;
+    width: 100%;
+}
+
+#buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.operation-button,
+.number-button,
+#clear-button,
+.function-button {
+    border: 1px solid black;
+    width: 106.25px;
+    height: 105.2px;
+    box-sizing: border-box;
+}
+
+button {
+    font-size: 30px;
+    border-radius: 4px;
+}
+
+.wide {
+    width: 212.5px;
+}
+
+.operation-button {
+    background-color: greenyellow;
+}
+
+.function-button,
+#clear-button {
+    background-color: lightseagreen;
 }

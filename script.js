@@ -1,6 +1,7 @@
 const display = document.querySelector("#display");
 const clearBtn = document.querySelector("#clear-button");
 const numberBtn = document.querySelectorAll(".number-button");
+const plusMinusBtn = document.querySelector(".plus-minus");
 let firstNumber;
 let secondNumber;
 let operator;
@@ -11,13 +12,25 @@ clearBtn.addEventListener('click', () => {
     displayValue = 0;
 });
 
+plusMinusBtn.addEventListener('click', () => {
+    if (display.textContent !== "0" && display.textContent.includes("-")) {
+        display.textContent = display.textContent.slice(1);
+    } else if (display.textContent !== "0") {
+        display.textContent = "-" + display.textContent;
+    }
+});
+
 numberBtn.forEach((button) => {
     button.addEventListener('click', () => {
         if (display.textContent == "0") {
             display.textContent = "";
         }
-        display.textContent += button.textContent;
-        displayValue += Number(display.textContent);
+        if (display.textContent.length == 9) {
+            display.textContent = display.textContent;
+        } else {
+            display.textContent += button.textContent;
+            displayValue += Number(display.textContent);
+        }
     })
 });
 
