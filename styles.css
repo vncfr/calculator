@@ -53,15 +53,17 @@ button {
 }
 
 .number-button,
-.floating-button {
+.floating {
     background-color: darkgray;
 }
 
-.operation-button {
+.operation-button,
+.equal-button {
     background-color: orange;
 }
 
-.function-button,
+.operation-button.percentage,
+.operation-button.plus-minus,
 #clear-button {
     background-color: lightgray;
 }
