@@ -51,7 +51,6 @@ button {
     box-sizing: border-box;
     font-family: 'Rajdhani', sans-serif;
     text-align: center;
-    color: black;
 }
 
 .wide {
@@ -61,11 +60,15 @@ button {
 .number-button,
 .floating {
     background-color: darkgray;
+    color: black;
+    text-align: center;
 }
 
 .operation-button,
 .equal-button {
     background-color: orange;
+    color: black;
+    text-align: center;
 }
 
 .operation-button.percentage,
