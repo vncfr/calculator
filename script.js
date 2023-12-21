@@ -95,6 +95,7 @@ divideBtn.addEventListener('click', () => {
         displayValue = 0;
         operator = "divide";
     }
+    operator = "divide";
     lastBtnPressed = divideBtn;
 });
 
@@ -128,6 +129,7 @@ multiplyBtn.addEventListener('click', () => {
         displayValue = 0;
         operator = "multiply";
     }
+    operator = "multiply";
     lastBtnPressed = multiplyBtn;
 });
 
@@ -158,9 +160,9 @@ subtractBtn.addEventListener('click', () => {
         operator = "subtract";
     } else if (!firstNumber) {
         firstNumber = displayValue;
-        /* displayValue = 0; */
         operator = "subtract";
     }
+    operator = "subtract";
     lastBtnPressed = subtractBtn;
 });
 
@@ -194,6 +196,7 @@ addBtn.addEventListener('click', () => {
         displayValue = 0;
         operator = "add";
     }
+    operator = "add";
     lastBtnPressed = addBtn;
 });
 
