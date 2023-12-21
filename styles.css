@@ -70,3 +70,26 @@ button {
 #clear-button {
     background-color: lightgray;
 }
+
+@media (max-width: 450px) {
+    #calculator {
+        height: 505.5px;
+        min-width: 350px;
+        max-width: 350px;
+    }
+
+    #display {
+        height: 77.5px;
+        font-size: 60.5px;
+    }
+
+    button {
+        font-size: 27.25px;
+        width: 81.5px;
+        height: 80.8px;
+    }
+
+    .wide {
+        width: 163px;
+    }
+}
