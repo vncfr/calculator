@@ -17,7 +17,8 @@ let secondNumber;
 let operator;
 let displayValue = 0;
 
-clearBtn.addEventListener('click', () => {
+clearBtn.addEventListener('click', function (e) {
+    clickEffect(this);
     firstNumber = 0;
     secondNumber = 0;
     display.textContent = "0";
@@ -25,8 +26,9 @@ clearBtn.addEventListener('click', () => {
     unselectButton();
 });
 
-plusMinusBtn.addEventListener('click', () => {
-    if (displayValue !== "0" && display.textContent.includes("-")) {
+plusMinusBtn.addEventListener('click', function (e) {
+    clickEffect(this);
+    if (displayValue !== 0 && display.textContent.charAt(0) == "-") {
         display.textContent = display.textContent.slice(1);
         displayValue = Number(display.textContent);
     } else if (displayValue !== 0) {
@@ -35,21 +37,46 @@ plusMinusBtn.addEventListener('click', () => {
     }
 });
 
-percentageBtn.addEventListener('click', () => {
-    displayValue = percentage(displayValue);
-    display.textContent = displayValue;
+percentageBtn.addEventListener('click', function (e) {
+    unselectButton();
+    clickEffect(this);
+    if (firstNumber && !lastBtnPressed.className.includes("percentage")) {
+        secondNumber = displayValue;
+        let percentageNum = Math.round(firstNumber * percentage(secondNumber) * 10000000) / 10000000;
+        displayValue = percentageNum;
+        display.textContent = displayValue;
+        secondNumber = displayValue;
+    } else if (firstNumber) {
+        secondNumber = percentage(firstNumber);
+        displayValue = secondNumber;
+        display.textContent = displayValue;
+        firstNumber = displayValue.toFixed(50);
+        secondNumber = 0;
+    } else {
+        firstNumber = displayValue;
+        displayValue = percentage(firstNumber);
+        display.textContent = displayValue;
+        firstNumber = displayValue;
+    }
     if (display.textContent.length > 9) {
         display.textContent = Number.parseFloat(displayValue).toExponential(2);
     }
-    firstNumber = displayValue;
-    /* displayValue = 0; */
     lastBtnPressed = percentageBtn;
+    selected = true;
 });
 
 divideBtn.addEventListener('click', () => {
     unselectButton();
     selectButton(divideBtn);
-    if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
+    if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
+        displayValue = operate(firstNumber, secondNumber, operator);
+        display.textContent = displayValue;
+        if (display.textContent.length > 9) {
+            display.textContent = Number.parseFloat(displayValue).toExponential(2);
+        }
+        firstNumber = displayValue;
+        operator = "divide";
+    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
         secondNumber = displayValue;
         unselectButton();
         selectButton(divideBtn);
@@ -74,7 +101,15 @@ divideBtn.addEventListener('click', () => {
 multiplyBtn.addEventListener('click', () => {
     unselectButton();
     selectButton(multiplyBtn);
-    if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
+    if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
+        displayValue = operate(firstNumber, secondNumber, operator);
+        display.textContent = displayValue;
+        if (display.textContent.length > 9) {
+            display.textContent = Number.parseFloat(displayValue).toExponential(2);
+        }
+        firstNumber = displayValue;
+        operator = "multiply";
+    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
         secondNumber = displayValue;
         unselectButton();
         selectButton(multiplyBtn);
@@ -99,10 +134,18 @@ multiplyBtn.addEventListener('click', () => {
 subtractBtn.addEventListener('click', () => {
     unselectButton();
     selectButton(subtractBtn);
-    if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
+    if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
+        displayValue = operate(firstNumber, secondNumber, operator);
+        display.textContent = displayValue;
+        if (display.textContent.length > 9) {
+            display.textContent = Number.parseFloat(displayValue).toExponential(2);
+        }
+        firstNumber = displayValue;
+        operator = "subtract";
+    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
         secondNumber = displayValue;
-        unselectButton();
-        selectButton(subtractBtn);
+        /* unselectButton();
+        selectButton(subtractBtn); */
         operator = "subtract";
     } else if (lastBtnPressed.className.includes("number-button") && firstNumber) {
         secondNumber = displayValue;
@@ -115,7 +158,7 @@ subtractBtn.addEventListener('click', () => {
         operator = "subtract";
     } else if (!firstNumber) {
         firstNumber = displayValue;
-        displayValue = 0;
+        /* displayValue = 0; */
         operator = "subtract";
     }
     lastBtnPressed = subtractBtn;
@@ -124,7 +167,15 @@ subtractBtn.addEventListener('click', () => {
 addBtn.addEventListener('click', () => {
     unselectButton();
     selectButton(addBtn);
-    if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
+    if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
+        displayValue = operate(firstNumber, secondNumber, operator);
+        display.textContent = displayValue;
+        if (display.textContent.length > 9) {
+            display.textContent = Number.parseFloat(displayValue).toExponential(2);
+        }
+        firstNumber = displayValue;
+        operator = "add";
+    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
         secondNumber = displayValue;
         unselectButton();
         selectButton(addBtn);
@@ -146,9 +197,19 @@ addBtn.addEventListener('click', () => {
     lastBtnPressed = addBtn;
 });
 
-equalBtn.addEventListener('click', () => {
+equalBtn.addEventListener('click', function (e) {
     unselectButton();
-    if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
+    clickEffect(this);
+    if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
+        displayValue = operate(firstNumber, secondNumber, operator);
+        display.textContent = displayValue;
+        if (display.textContent.length > 9) {
+            display.textContent = Number.parseFloat(displayValue).toExponential(2);
+        }
+        firstNumber = displayValue;
+        unselectButton();
+    }
+    else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
         secondNumber = firstNumber;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
@@ -157,7 +218,7 @@ equalBtn.addEventListener('click', () => {
         }
         firstNumber = displayValue;
         unselectButton();
-    } else if (lastBtnPressed.className == "equal-button" && firstNumber) {
+    } else if (lastBtnPressed.className == "equal-button" && (firstNumber || secondNumber)) {
         if (!secondNumber) {
             display.textContent = firstNumber;
         } else {
@@ -183,10 +244,12 @@ equalBtn.addEventListener('click', () => {
         displayValue = 0;
     }
     lastBtnPressed = equalBtn;
+    selected = true;
 });
 
 numberBtn.forEach((button) => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', function (e) {
+        clickEffect(this);
         if (display.textContent === "0.") {
             displayValue = Number(display.textContent);
         } else if (display.textContent === "0" || selected) {
@@ -232,7 +295,7 @@ function divide(a, b) {
 }
 
 function percentage(num) {
-    return num * 0.01;
+    return (num * 0.01);
 }
 
 function selectButton(button) {
@@ -264,4 +327,12 @@ function operate(a, b, operator) {
         case "divide":
             return divide(a, b);
     }
+}
+
+function clickEffect(element) {
+    const originalColor = element.style.backgroundColor;
+    element.style.backgroundColor = "white";
+    setTimeout(() => {
+        element.style.backgroundColor = originalColor;
+    }, 75)
 }
