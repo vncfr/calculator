@@ -9,6 +9,7 @@ const multiplyBtn = document.querySelector(".multiply");
 const subtractBtn = document.querySelector(".subtract");
 const addBtn = document.querySelector(".add");
 const equalBtn = document.querySelector(".equal-button");
+const backspaceBtn = document.querySelector("#backspace");
 
 let selected;
 let lastBtnPressed = clearBtn;
@@ -17,7 +18,24 @@ let secondNumber;
 let operator;
 let displayValue = 0;
 
-clearBtn.addEventListener('click', function (e) {
+backspaceBtn.addEventListener('click', function () {
+    clickEffect(this);
+    if (display.textContent.length <= 2) {
+        if (isNaN(Number(display.textContent.slice(0, -1))) || display.textContent.slice(0, -1) == 0) {
+            display.textContent = 0;
+            displayValue = display.textContent;
+        } else {
+            display.textContent = display.textContent.slice(0, -1);
+            displayValue = display.textContent;
+        }
+    } else {
+        display.textContent = display.textContent.slice(0, -1);
+        displayValue = display.textContent;
+    }
+    lastBtnPressed = backspaceBtn;
+})
+
+clearBtn.addEventListener('click', function () {
     clickEffect(this);
     firstNumber = 0;
     secondNumber = 0;
@@ -26,7 +44,7 @@ clearBtn.addEventListener('click', function (e) {
     unselectButton();
 });
 
-plusMinusBtn.addEventListener('click', function (e) {
+plusMinusBtn.addEventListener('click', function () {
     clickEffect(this);
     if (displayValue !== 0 && display.textContent.charAt(0) == "-") {
         display.textContent = display.textContent.slice(1);
@@ -37,21 +55,25 @@ plusMinusBtn.addEventListener('click', function (e) {
     }
 });
 
-percentageBtn.addEventListener('click', function (e) {
+percentageBtn.addEventListener('click', function () {
     unselectButton();
     clickEffect(this);
-    if (firstNumber && !lastBtnPressed.className.includes("percentage")) {
-        secondNumber = displayValue;
-        let percentageNum = Math.round(firstNumber * percentage(secondNumber) * 10000000) / 10000000;
-        displayValue = percentageNum;
+    if (firstNumber && !secondNumber && lastBtnPressed.className.includes("percentage")) {
+        /* secondNumber = displayValue; */
+        displayValue = percentage(displayValue);
         display.textContent = displayValue;
-        secondNumber = displayValue;
-    } else if (firstNumber) {
-        secondNumber = percentage(firstNumber);
-        displayValue = secondNumber;
+        firstNumber = displayValue;
+        /* secondNumber = displayValue; */
+    } else if (firstNumber && secondNumber && lastBtnPressed.className.includes("percentage")) {
+        secondNumber = secondNumber * percentage(firstNumber);
+        display.textContent = secondNumber;
+    } else if (firstNumber && !secondNumber) {
+        secondNumber = firstNumber * percentage(displayValue);
+        display.textContent = secondNumber;
+        /* displayValue = secondNumber;
         display.textContent = displayValue;
         firstNumber = displayValue.toFixed(50);
-        secondNumber = 0;
+        secondNumber = 0; */
     } else {
         firstNumber = displayValue;
         displayValue = percentage(firstNumber);
@@ -146,8 +168,6 @@ subtractBtn.addEventListener('click', () => {
         operator = "subtract";
     } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
         secondNumber = displayValue;
-        /* unselectButton();
-        selectButton(subtractBtn); */
         operator = "subtract";
     } else if (lastBtnPressed.className.includes("number-button") && firstNumber) {
         secondNumber = displayValue;
@@ -200,7 +220,7 @@ addBtn.addEventListener('click', () => {
     lastBtnPressed = addBtn;
 });
 
-equalBtn.addEventListener('click', function (e) {
+equalBtn.addEventListener('click', function () {
     unselectButton();
     clickEffect(this);
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
@@ -251,7 +271,7 @@ equalBtn.addEventListener('click', function (e) {
 });
 
 numberBtn.forEach((button) => {
-    button.addEventListener('click', function (e) {
+    button.addEventListener('click', function () {
         clickEffect(this);
         if (display.textContent === "0.") {
             displayValue = Number(display.textContent);
@@ -338,4 +358,10 @@ function clickEffect(element) {
     setTimeout(() => {
         element.style.backgroundColor = originalColor;
     }, 75)
+}
+
+function scientificNotation (str) {
+    if (str.length > 9) {
+        str = Number.parseFloat(displayValue).toExponential(2);
+    }
 }
