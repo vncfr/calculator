@@ -71,7 +71,7 @@ button {
     background-color: lightgray;
 }
 
-@media (max-width: 450px) {
+@media (max-width: 450px), (max-height: 600px) {
     #calculator {
         height: 505.5px;
         min-width: 350px;
