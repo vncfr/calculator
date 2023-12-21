@@ -50,6 +50,8 @@ button {
     height: 105.2px;
     box-sizing: border-box;
     font-family: 'Rajdhani', sans-serif;
+    text-align: center;
+    color: black;
 }
 
 .wide {
