@@ -75,6 +75,8 @@ button {
 .operation-button.plus-minus,
 #clear-button {
     background-color: lightgray;
+    color: black;
+    text-align: center;
 }
 
 @media (max-width: 450px), (max-height: 600px) {
