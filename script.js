@@ -1,6 +1,6 @@
 const display = document.querySelector("#display");
 const clearBtn = document.querySelector("#clear-button");
-const numberBtn = document.querySelectorAll(".number-button");
+const numberBtn = Array.from(document.querySelectorAll(".number-button"));
 const plusMinusBtn = document.querySelector(".plus-minus");
 const floatingPointBtn = document.querySelector(".floating");
 const percentageBtn = document.querySelector(".percentage");
@@ -13,8 +13,8 @@ const backspaceBtn = document.querySelector("#backspace");
 
 let selected;
 let lastBtnPressed = clearBtn;
-let firstNumber;
-let secondNumber;
+let firstNumber = 0;
+let secondNumber = 0;
 let operator;
 let displayValue = 0;
 
@@ -41,6 +41,7 @@ clearBtn.addEventListener('click', function () {
     secondNumber = 0;
     display.textContent = "0";
     displayValue = 0;
+    operator = null;
     unselectButton();
 });
 
@@ -59,28 +60,25 @@ percentageBtn.addEventListener('click', function () {
     unselectButton();
     clickEffect(this);
     if (firstNumber && !secondNumber && lastBtnPressed.className.includes("percentage")) {
-        /* secondNumber = displayValue; */
         displayValue = percentage(displayValue);
         display.textContent = displayValue;
         firstNumber = displayValue;
-        /* secondNumber = displayValue; */
     } else if (firstNumber && secondNumber && lastBtnPressed.className.includes("percentage")) {
         secondNumber = secondNumber * percentage(firstNumber);
         display.textContent = secondNumber;
     } else if (firstNumber && !secondNumber) {
         secondNumber = firstNumber * percentage(displayValue);
         display.textContent = secondNumber;
-        /* displayValue = secondNumber;
-        display.textContent = displayValue;
-        firstNumber = displayValue.toFixed(50);
-        secondNumber = 0; */
     } else {
         firstNumber = displayValue;
         displayValue = percentage(firstNumber);
         display.textContent = displayValue;
         firstNumber = displayValue;
     }
-    if (display.textContent.length > 9) {
+    if (String(displayValue).length > 9) {
+        if (String(displayValue).includes(".")) {
+            display.textContent = Number.parseFloat(displayValue).toExponential(9 - String(displayValue).indexOf(".") + 1);
+        }
         display.textContent = Number.parseFloat(displayValue).toExponential(2);
     }
     lastBtnPressed = percentageBtn;
@@ -93,7 +91,10 @@ divideBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (display.textContent.length > 9) {
+        if (String(displayValue).length > 9) {
+            if (String(displayValue).includes(".")) {
+                display.textContent = Number.parseFloat(displayValue).toExponential(9 - String(displayValue).indexOf(".") + 1);
+            }
             display.textContent = Number.parseFloat(displayValue).toExponential(2);
         }
         firstNumber = displayValue;
@@ -103,13 +104,11 @@ divideBtn.addEventListener('click', () => {
         unselectButton();
         selectButton(divideBtn);
         operator = "divide";
-    } else if (lastBtnPressed.className.includes("number-button") && firstNumber) {
+    } else if (lastBtnPressed.className.includes("number-button") && firstNumber != 0) {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (display.textContent.length > 9) {
-            display.textContent = Number.parseFloat(displayValue).toExponential(2);
-        }
+        scientificNotation(displayValue);
         firstNumber = displayValue;
         operator = "divide";
     } else if (!firstNumber) {
@@ -127,9 +126,7 @@ multiplyBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (display.textContent.length > 9) {
-            display.textContent = Number.parseFloat(displayValue).toExponential(2);
-        }
+        scientificNotation(displayValue);
         firstNumber = displayValue;
         operator = "multiply";
     } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
@@ -137,13 +134,11 @@ multiplyBtn.addEventListener('click', () => {
         unselectButton();
         selectButton(multiplyBtn);
         operator = "multiply";
-    } else if (lastBtnPressed.className.includes("number-button") && firstNumber) {
+    } else if (lastBtnPressed.className.includes("number-button") && firstNumber != 0) {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (display.textContent.length > 9) {
-            display.textContent = Number.parseFloat(displayValue).toExponential(2);
-        }
+        scientificNotation(displayValue);
         firstNumber = displayValue;
         operator = "multiply";
     } else if (!firstNumber) {
@@ -161,21 +156,17 @@ subtractBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (display.textContent.length > 9) {
-            display.textContent = Number.parseFloat(displayValue).toExponential(2);
-        }
+        scientificNotation(displayValue);
         firstNumber = displayValue;
         operator = "subtract";
     } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
         secondNumber = displayValue;
         operator = "subtract";
-    } else if (lastBtnPressed.className.includes("number-button") && firstNumber) {
+    } else if (lastBtnPressed.className.includes("number-button") && firstNumber != 0) {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (display.textContent.length > 9) {
-            display.textContent = Number.parseFloat(displayValue).toExponential(2);
-        }
+        scientificNotation(displayValue);
         firstNumber = displayValue;
         operator = "subtract";
     } else if (!firstNumber) {
@@ -192,9 +183,7 @@ addBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (display.textContent.length > 9) {
-            display.textContent = Number.parseFloat(displayValue).toExponential(2);
-        }
+        scientificNotation(displayValue);
         firstNumber = displayValue;
         operator = "add";
     } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
@@ -202,13 +191,11 @@ addBtn.addEventListener('click', () => {
         unselectButton();
         selectButton(addBtn);
         operator = "add";
-    } else if (lastBtnPressed.className.includes("number-button") && firstNumber) {
+    } else if (lastBtnPressed.className.includes("number-button") && firstNumber != 0) {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (display.textContent.length > 9) {
-            display.textContent = Number.parseFloat(displayValue).toExponential(2);
-        }
+        scientificNotation(displayValue);
         firstNumber = displayValue;
         operator = "add";
     } else if (!firstNumber) {
@@ -226,9 +213,7 @@ equalBtn.addEventListener('click', function () {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (display.textContent.length > 9) {
-            display.textContent = Number.parseFloat(displayValue).toExponential(2);
-        }
+        scientificNotation(displayValue);
         firstNumber = displayValue;
         unselectButton();
     }
@@ -236,9 +221,7 @@ equalBtn.addEventListener('click', function () {
         secondNumber = firstNumber;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (display.textContent.length > 9) {
-            display.textContent = Number.parseFloat(displayValue).toExponential(2);
-        }
+        scientificNotation(displayValue);
         firstNumber = displayValue;
         unselectButton();
     } else if (lastBtnPressed.className == "equal-button" && (firstNumber || secondNumber)) {
@@ -251,20 +234,15 @@ equalBtn.addEventListener('click', function () {
                 display.textContent = Number.parseFloat(displayValue).toExponential(2);
             }
             firstNumber = displayValue;
-            displayValue = 0;
         }
-    } else if (lastBtnPressed.className.includes("number-button") && firstNumber) {
+    } else if (lastBtnPressed.className.includes("number-button") && firstNumber != 0) {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (display.textContent.length > 9) {
-            display.textContent = Number.parseFloat(displayValue).toExponential(2);
-        }
+        scientificNotation(displayValue);
         firstNumber = displayValue;
-        displayValue = 0;
     } else if (!firstNumber) {
         firstNumber = displayValue;
-        displayValue = 0;
     }
     lastBtnPressed = equalBtn;
     selected = true;
@@ -299,7 +277,85 @@ floatingPointBtn.addEventListener('click', () => {
         display.textContent = display.textContent + ".";
         displayValue = Number(display.textContent);
     }
-})
+});
+
+window.addEventListener("keydown", function (event) {
+    if (event.defaultPrevented) {
+        return; // Do nothing if the event was already processed
+    }
+    switch (event.key) {
+        case "Enter":
+            equalBtn.click();
+            break;
+        case "=":
+            equalBtn.click();
+            break;
+        case "'":
+            plusMinusBtn.click();
+            break;
+        case "+":
+            addBtn.click();
+            break;
+        case "-":
+            subtractBtn.click();
+            break;
+        case "*":
+            multiplyBtn.click();
+            break;
+        case "/":
+            divideBtn.click();
+            break;
+        case "Backspace":
+            backspaceBtn.click();
+            break;
+        case ",":
+            floatingPointBtn.click();
+            break;
+        case ".":
+            floatingPointBtn.click();
+            break;
+        case "%":
+            percentageBtn.click();
+            break;
+        case "0":
+            numberBtn[9].click();
+            break;
+        case "Delete":
+            clearBtn.click();
+            break;
+        case "1":
+            numberBtn[6].click();
+            break;
+        case "2":
+            numberBtn[7].click();
+            break;
+        case "3":
+            numberBtn[8].click();
+            break;
+        case "4":
+            numberBtn[3].click();
+            break;
+        case "5":
+            numberBtn[4].click();
+            break;
+        case "6":
+            numberBtn[5].click();
+            break;
+        case "7":
+            numberBtn[0].click();
+            break;
+        case "8":
+            numberBtn[1].click();
+            break;
+        case "9":
+            numberBtn[2].click();
+            break;
+        default:
+            return;
+    }
+
+    event.preventDefault();
+}, true);
 
 function add(a, b) {
     return Math.round((a + b) * 10000000) / 10000000;
@@ -349,6 +405,8 @@ function operate(a, b, operator) {
             return multiply(a, b);
         case "divide":
             return divide(a, b);
+        case undefined:
+            return secondNumber;
     }
 }
 
@@ -360,8 +418,13 @@ function clickEffect(element) {
     }, 75)
 }
 
-function scientificNotation (str) {
-    if (str.length > 9) {
-        str = Number.parseFloat(displayValue).toExponential(2);
+function scientificNotation (value) {
+    if (String(value).length > 9) {
+        if (String(value).indexOf('.') > 7) {
+            display.textContent = Number.parseFloat(value).toExponential(2);
+            
+        } else {
+            display.textContent = value.toFixed(8 - String(value).indexOf("."));
+        }
     }
 }
