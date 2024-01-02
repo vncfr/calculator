@@ -193,7 +193,6 @@ equalBtn.addEventListener('click', function () {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(display.textContent);
         firstNumber = displayValue;
         unselectButton();
     } else if (lastBtnPressed.className.includes("plus-minus") && firstNumber != 0) {
@@ -202,7 +201,6 @@ equalBtn.addEventListener('click', function () {
         secondNumber = firstNumber;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(display.textContent);
         firstNumber = displayValue;
         unselectButton();
     } else if (lastBtnPressed.className == "equal-button" && (firstNumber || secondNumber)) {
@@ -211,20 +209,17 @@ equalBtn.addEventListener('click', function () {
         } else {
             displayValue = operate(firstNumber, secondNumber, operator);
             display.textContent = displayValue;
-            if (display.textContent.length > 9) {
-                display.textContent = Number.parseFloat(displayValue).toExponential(2);
-            }
             firstNumber = displayValue;
         }
     } else if (lastBtnPressed.className.includes("number-button") && firstNumber != 0) {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(display.textContent);
         firstNumber = displayValue;
     } else if (!firstNumber) {
         firstNumber = displayValue;
     }
+    scientificNotation(display.textContent);
     lastBtnPressed = equalBtn;
     selected = true;
 });
@@ -401,10 +396,12 @@ function clickEffect(element) {
 
 function scientificNotation(value) {
     if (String(value).length > 9) {
-        if (String(value).indexOf('.') > 7) {
+        if (!String(value).includes(".") || String(value).indexOf('.') > 7 || (0 < String(value) < 1)) {
             display.textContent = Number.parseFloat(value).toExponential(2);
-        } else {
-            display.textContent = Number(value).toExponential(5 - String(value).indexOf("."));
+        } else if (String(value).indexOf('.') <= 7) {
+            if (Number(String(value).slice(String(value).indexOf("."))) != 0) {
+                display.textContent = Number(value).toFixed(7 - String(value).indexOf("."));
+            }
         }
     }
 }
