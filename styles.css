@@ -109,6 +109,7 @@ button {
         font-size: 27.25px;
         width: 81.5px;
         height: 80.8px;
+        padding: 0;
     }
 
     .wide {
