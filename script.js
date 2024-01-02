@@ -54,6 +54,7 @@ plusMinusBtn.addEventListener('click', function () {
         display.textContent = "-" + display.textContent;
         displayValue = Number(display.textContent);
     }
+    lastBtnPressed = plusMinusBtn;
 });
 
 percentageBtn.addEventListener('click', function () {
@@ -66,8 +67,11 @@ percentageBtn.addEventListener('click', function () {
     } else if (firstNumber && secondNumber && lastBtnPressed.className.includes("percentage")) {
         secondNumber = secondNumber * percentage(firstNumber);
         display.textContent = secondNumber;
+    } else if (firstNumber && !secondNumber && (operator == "multiply" || operator == "divide")) {
+        secondNumber = percentage(displayValue);
+        display.textContent = secondNumber;
     } else if (firstNumber && !secondNumber) {
-        secondNumber = firstNumber * percentage(displayValue);
+        secondNumber = Math.round(firstNumber * percentage(displayValue) * 10000000) / 10000000;
         display.textContent = secondNumber;
     } else {
         firstNumber = displayValue;
@@ -75,12 +79,7 @@ percentageBtn.addEventListener('click', function () {
         display.textContent = displayValue;
         firstNumber = displayValue;
     }
-    if (String(displayValue).length > 9) {
-        if (String(displayValue).includes(".")) {
-            display.textContent = Number.parseFloat(displayValue).toExponential(9 - String(displayValue).indexOf(".") + 1);
-        }
-        display.textContent = Number.parseFloat(displayValue).toExponential(2);
-    }
+    scientificNotation(display.textContent);
     lastBtnPressed = percentageBtn;
     selected = true;
 });
@@ -91,30 +90,21 @@ divideBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        if (String(displayValue).length > 9) {
-            if (String(displayValue).includes(".")) {
-                display.textContent = Number.parseFloat(displayValue).toExponential(9 - String(displayValue).indexOf(".") + 1);
-            }
-            display.textContent = Number.parseFloat(displayValue).toExponential(2);
-        }
+        scientificNotation(display.textContent);
         firstNumber = displayValue;
-        operator = "divide";
-    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
+    } else if (lastBtnPressed.className.includes("plus-minus") && firstNumber != 0) {
+        firstNumber = displayValue;
+    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber != 0) {
         secondNumber = displayValue;
-        unselectButton();
-        selectButton(divideBtn);
-        operator = "divide";
     } else if (lastBtnPressed.className.includes("number-button") && firstNumber != 0) {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(displayValue);
+        scientificNotation(display.textContent);
         firstNumber = displayValue;
-        operator = "divide";
     } else if (!firstNumber) {
         firstNumber = displayValue;
         displayValue = 0;
-        operator = "divide";
     }
     operator = "divide";
     lastBtnPressed = divideBtn;
@@ -126,25 +116,21 @@ multiplyBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(displayValue);
+        scientificNotation(display.textContent);
         firstNumber = displayValue;
-        operator = "multiply";
-    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
+    } else if (lastBtnPressed.className.includes("plus-minus") && firstNumber != 0) {
+        firstNumber = displayValue;
+    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber != 0) {
         secondNumber = displayValue;
-        unselectButton();
-        selectButton(multiplyBtn);
-        operator = "multiply";
     } else if (lastBtnPressed.className.includes("number-button") && firstNumber != 0) {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(displayValue);
+        scientificNotation(display.textContent);
         firstNumber = displayValue;
-        operator = "multiply";
     } else if (!firstNumber) {
         firstNumber = displayValue;
         displayValue = 0;
-        operator = "multiply";
     }
     operator = "multiply";
     lastBtnPressed = multiplyBtn;
@@ -156,22 +142,20 @@ subtractBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(displayValue);
+        scientificNotation(display.textContent);
         firstNumber = displayValue;
-        operator = "subtract";
-    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
+    } else if (lastBtnPressed.className.includes("plus-minus") && firstNumber != 0) {
+        firstNumber = displayValue;
+    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber != 0) {
         secondNumber = displayValue;
-        operator = "subtract";
     } else if (lastBtnPressed.className.includes("number-button") && firstNumber != 0) {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(displayValue);
+        scientificNotation(display.textContent);
         firstNumber = displayValue;
-        operator = "subtract";
     } else if (!firstNumber) {
         firstNumber = displayValue;
-        operator = "subtract";
     }
     operator = "subtract";
     lastBtnPressed = subtractBtn;
@@ -183,25 +167,21 @@ addBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(displayValue);
+        scientificNotation(display.textContent);
         firstNumber = displayValue;
-        operator = "add";
-    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
+    } else if (lastBtnPressed.className.includes("plus-minus") && firstNumber != 0) {
+        firstNumber = displayValue;
+    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber != 0) {
         secondNumber = displayValue;
-        unselectButton();
-        selectButton(addBtn);
-        operator = "add";
     } else if (lastBtnPressed.className.includes("number-button") && firstNumber != 0) {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(displayValue);
+        scientificNotation(display.textContent);
         firstNumber = displayValue;
-        operator = "add";
     } else if (!firstNumber) {
         firstNumber = displayValue;
         displayValue = 0;
-        operator = "add";
     }
     operator = "add";
     lastBtnPressed = addBtn;
@@ -213,15 +193,16 @@ equalBtn.addEventListener('click', function () {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(displayValue);
+        scientificNotation(display.textContent);
         firstNumber = displayValue;
         unselectButton();
-    }
-    else if (lastBtnPressed.className.includes("operation-button") && firstNumber) {
+    } else if (lastBtnPressed.className.includes("plus-minus") && firstNumber != 0) {
+        firstNumber = displayValue;
+    } else if (lastBtnPressed.className.includes("operation-button") && firstNumber != 0) {
         secondNumber = firstNumber;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(displayValue);
+        scientificNotation(display.textContent);
         firstNumber = displayValue;
         unselectButton();
     } else if (lastBtnPressed.className == "equal-button" && (firstNumber || secondNumber)) {
@@ -239,7 +220,7 @@ equalBtn.addEventListener('click', function () {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(displayValue);
+        scientificNotation(display.textContent);
         firstNumber = displayValue;
     } else if (!firstNumber) {
         firstNumber = displayValue;
@@ -418,13 +399,12 @@ function clickEffect(element) {
     }, 75)
 }
 
-function scientificNotation (value) {
+function scientificNotation(value) {
     if (String(value).length > 9) {
         if (String(value).indexOf('.') > 7) {
             display.textContent = Number.parseFloat(value).toExponential(2);
-            
         } else {
-            display.textContent = value.toFixed(8 - String(value).indexOf("."));
+            display.textContent = Number(value).toExponential(5 - String(value).indexOf("."));
         }
     }
 }

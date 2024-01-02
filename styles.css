@@ -30,8 +30,9 @@ body {
     width: 10%;
     text-align: center;
     height: 60%;
-    background-color: black;
+    background-color: transparent;
     color: white;
+    box-sizing: border-box;
 }
 
 #display {
@@ -46,7 +47,7 @@ body {
     border-radius: 5px;
     background-color: black;
     color: white;
-    font-size: 78px;
+    font-size: 72px;
     width: 100%;
 }
 
@@ -101,7 +102,7 @@ button {
 
     #display {
         height: 77.5px;
-        font-size: 60.5px;
+        font-size: 55px;
     }
 
     button {
