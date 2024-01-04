@@ -20,6 +20,10 @@ let displayValue = 0;
 
 backspaceBtn.addEventListener('click', function () {
     clickEffect(this);
+    if (display.textContent == "Error") {
+        display.textContent = 0;
+        displayValue = display.textContent;
+    }
     if (display.textContent.length <= 2) {
         if (isNaN(Number(display.textContent.slice(0, -1))) || display.textContent.slice(0, -1) == 0) {
             display.textContent = 0;
@@ -243,12 +247,15 @@ numberBtn.forEach((button) => {
     })
 });
 
-floatingPointBtn.addEventListener('click', () => {
+floatingPointBtn.addEventListener('click', function () {
+    clickEffect(this);
     if (lastBtnPressed.className.includes("operation-button")) {
         display.textContent = "0.";
         displayValue = Number(display.textContent);
     } else if (display.textContent.includes(".")) {
         display.textContent = display.textContent; 
+    } else if (display.textContent.includes("e")) {
+        displayValue = Number(display.textContent);
     } else {
         display.textContent = display.textContent + ".";
         displayValue = Number(display.textContent);
