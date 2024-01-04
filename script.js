@@ -236,7 +236,7 @@ numberBtn.forEach((button) => {
         } else if (display.textContent === "0" || selected) {
             display.textContent = "";
         }
-        if (display.textContent.length == 9) {
+        if (display.textContent.length >= 9) {
             display.textContent = display.textContent;
         } else {
             display.textContent += button.textContent;
@@ -411,7 +411,7 @@ function formatError(value) {
                 if (decimals.toFixed(7 - value.indexOf(".")) ==  0) {
                     return Number.parseFloat(value).toExponential(0);
                 } else {
-                    let roundedNumber = Math.round(Number(value) * (10 ** (6 - value.indexOf(".")))) / (10 ** (6 - value.indexOf(".")));
+                    let roundedNumber = Math.round(Number(value) * (10 ** (8 - value.indexOf(".")))) / (10 ** (8 - value.indexOf(".")));
                     if (String(roundedNumber).length > 9) {
                         firstNumber = 0;
                         secondNumber = 0;
