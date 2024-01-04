@@ -412,7 +412,7 @@ function formatError(value) {
                     return Number.parseFloat(value).toExponential(0);
                 } else {
                     let roundedNumber = Math.round(Number(value) * (10 ** (6 - value.indexOf(".")))) / (10 ** (6 - value.indexOf(".")));
-                    if (String(roundedNumber) > 9) {
+                    if (String(roundedNumber).length > 9) {
                         firstNumber = 0;
                         secondNumber = 0;
                         operator = null;
