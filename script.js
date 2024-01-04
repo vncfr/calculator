@@ -79,7 +79,7 @@ percentageBtn.addEventListener('click', function () {
         display.textContent = displayValue;
         firstNumber = displayValue;
     }
-    scientificNotation(display.textContent);
+    display.textContent = formatError(display.textContent);
     lastBtnPressed = percentageBtn;
     selected = true;
 });
@@ -90,7 +90,7 @@ divideBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(display.textContent);
+        display.textContent = formatError(display.textContent);
         firstNumber = displayValue;
     } else if (lastBtnPressed.className.includes("plus-minus") && firstNumber != 0) {
         firstNumber = displayValue;
@@ -100,7 +100,7 @@ divideBtn.addEventListener('click', () => {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(display.textContent);
+        display.textContent = formatError(display.textContent);
         firstNumber = displayValue;
     } else if (!firstNumber) {
         firstNumber = displayValue;
@@ -116,7 +116,7 @@ multiplyBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(display.textContent);
+        display.textContent = formatError(display.textContent);
         firstNumber = displayValue;
     } else if (lastBtnPressed.className.includes("plus-minus") && firstNumber != 0) {
         firstNumber = displayValue;
@@ -126,7 +126,7 @@ multiplyBtn.addEventListener('click', () => {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(display.textContent);
+        display.textContent = formatError(display.textContent);
         firstNumber = displayValue;
     } else if (!firstNumber) {
         firstNumber = displayValue;
@@ -142,7 +142,7 @@ subtractBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(display.textContent);
+        display.textContent = formatError(display.textContent);
         firstNumber = displayValue;
     } else if (lastBtnPressed.className.includes("plus-minus") && firstNumber != 0) {
         firstNumber = displayValue;
@@ -152,7 +152,7 @@ subtractBtn.addEventListener('click', () => {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(display.textContent);
+        display.textContent = formatError(display.textContent);
         firstNumber = displayValue;
     } else if (!firstNumber) {
         firstNumber = displayValue;
@@ -167,7 +167,7 @@ addBtn.addEventListener('click', () => {
     if (lastBtnPressed.className.includes("percentage") && firstNumber && secondNumber) {
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(display.textContent);
+        display.textContent = formatError(display.textContent);
         firstNumber = displayValue;
     } else if (lastBtnPressed.className.includes("plus-minus") && firstNumber != 0) {
         firstNumber = displayValue;
@@ -177,7 +177,7 @@ addBtn.addEventListener('click', () => {
         secondNumber = displayValue;
         displayValue = operate(firstNumber, secondNumber, operator);
         display.textContent = displayValue;
-        scientificNotation(display.textContent);
+        display.textContent = formatError(display.textContent);
         firstNumber = displayValue;
     } else if (!firstNumber) {
         firstNumber = displayValue;
@@ -219,7 +219,7 @@ equalBtn.addEventListener('click', function () {
     } else if (!firstNumber) {
         firstNumber = displayValue;
     }
-    scientificNotation(display.textContent);
+    display.textContent = formatError(display.textContent);
     lastBtnPressed = equalBtn;
     selected = true;
 });
@@ -257,7 +257,7 @@ floatingPointBtn.addEventListener('click', () => {
 
 window.addEventListener("keydown", function (event) {
     if (event.defaultPrevented) {
-        return; // Do nothing if the event was already processed
+        return;
     }
     switch (event.key) {
         case "Enter":
@@ -382,7 +382,7 @@ function operate(a, b, operator) {
         case "divide":
             return divide(a, b);
         case undefined:
-            return secondNumber;
+            return b;
     }
 }
 
@@ -394,14 +394,38 @@ function clickEffect(element) {
     }, 75)
 }
 
-function scientificNotation(value) {
-    if (String(value).length > 9) {
-        if (!String(value).includes(".") || String(value).indexOf('.') > 7 || (0 < String(value) < 1)) {
-            display.textContent = Number.parseFloat(value).toExponential(2);
-        } else if (String(value).indexOf('.') <= 7) {
-            if (Number(String(value).slice(String(value).indexOf("."))) != 0) {
-                display.textContent = Number(value).toFixed(7 - String(value).indexOf("."));
+function formatError(value) {
+    if (value.length > 9) {
+        if (value.includes(".")) {
+            if (value.indexOf(".") > 7) {
+                return Number.parseFloat(value).toExponential(0);
+            } else {
+                let decimals = Number(value.slice(value.indexOf(".")));
+                if (decimals.toFixed(7 - value.indexOf(".")) ==  0) {
+                    return Number.parseFloat(value).toExponential(0);
+                } else {
+                    let roundedNumber = Math.round(Number(value) * (10 ** (6 - value.indexOf(".")))) / (10 ** (6 - value.indexOf(".")));
+                    if (String(roundedNumber) > 9) {
+                        firstNumber = 0;
+                        secondNumber = 0;
+                        operator = null;
+                        displayValue = 0;
+                        return "Error";
+                    } else {
+                        return roundedNumber;
+                    }
+                }
             }
+        } else {
+            return Number.parseFloat(value).toExponential(0);
         }
+    } else if (value == "Infinity" || value == "-Infinity") {
+        firstNumber = 0;
+        secondNumber = 0;
+        operator = null;
+        displayValue = 0;
+        return "Error";
+    } else {
+        return value;
     }
 }
